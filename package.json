@@ -1,0 +1,22 @@
+{
+  "name": "neat_node",
+  "version": "1.0.0",
+  "description": "Just trying a neat NEAT in Node",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HybridKat/Neat_NEAT_Node.git"
+  },
+  "author": "James McGrath",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/HybridKat/Neat_NEAT_Node/issues"
+  },
+  "homepage": "https://github.com/HybridKat/Neat_NEAT_Node#readme",
+  "dependencies": {
+    "jetty": "^0.2.1"
+  }
+}
