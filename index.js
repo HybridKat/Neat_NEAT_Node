@@ -2,9 +2,9 @@ var Jetty = require("jetty");
   const fixJetty = require("./src/configs/jettyPatch.js");
   global.jetty = fixJetty(new Jetty(process.stdout));
 
-const BRAIN = require("./src/brain");
+const BRAIN = require("./src/neat/brains");
 
-var x = new BRAIN();
+var x = new BRAIN(4,2);
 
 // jetty.nuke();
 // jetty.moveTo([0,0]);
