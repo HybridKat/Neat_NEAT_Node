@@ -1,5 +1,8 @@
+const Clone = require('lodash/clonedeep');
+const Utils = require("./utils");
 const Node = require("./node");
 const Network = require("./network");
+
 const brain = function(ins, outs) { this.init(ins, outs) };
 brain.prototype = {
   neurons: [],
@@ -30,24 +33,51 @@ brain.prototype = {
   // ************************************************ PROCESSING ***************************************************
     sense: function( inputVals ) {
       // Reset les nodes avant tout
-        this.nodes.map( n => n.inputTotal = 0 );
+        this.nodes.map( n => n.output = null );
+
+      // Ensuite on pousse les output directement dans la node
         for( i=0; i<inputVals.length; i++ ) {
           this.nodes[i].output = inputVals[i];
         }
 
-      // Neurone par neurone on process les informations
-        console.log(this.nodes.map(n => n.output));
-        this.neurons.map( n => {
-          if( n.disabled ) return;
-          n.to.input += n.from.getOutput() * n.weight;
-        });
     },
 
     decide: function() {
-      console.log(this.outputs.map(n => n.getOutput()));
-    }
+      var results = [];
 
-    // ************************************************* EVOLUTION ***************************************************
+      this.outputs.map( n => {
+        results.push( n.getOutput(this.neurons) );
+      });
+
+      return results;
+    },
+
+  // ************************************************* EVOLUTION ***************************************************
+    breed: function() {
+      var childBrain = Clone( this );
+
+      childBrain.mutate();
+
+      return childBrain;
+    },
+
+    mutate: function() {
+      // Mutation sur le poids des neurones
+        this.neurons.map( n => {
+          if( Utils.random() < 0.8 )
+            n.mutate();
+        })
+
+      // Mutation qui ajoute un neurone
+        if( Utils.random() < 0.05 ) {
+          Network.createRandomNeuron();
+        }
+
+      // Mutation qui ajoute une node
+        if( Utils.random() < 0.01 ) {
+          Network.splitNeuron(Utils.pickRandom(this.neurons), this);
+        }
+    }
 };
 
 module.exports = brain;

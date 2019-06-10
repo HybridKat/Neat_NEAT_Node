@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/HybridKat/Neat_NEAT_Node#readme",
   "dependencies": {
-    "jetty": "^0.2.1"
+    "jetty": "^0.2.1",
+    "lodash": "^4.17.11"
   }
 }

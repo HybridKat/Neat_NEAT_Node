@@ -1,7 +1,9 @@
+const Clone = require('lodash/clonedeep');
+const Utils = require("./utils");
 const Neuron = require("./neuron");
-const Network = {
-  neuronHistory: [],
+const Node = require("./node");
 
+const Network = {
   generateNeurons: function( nodes, nbLayers ) {
     var neurons = [];
 
@@ -21,18 +23,46 @@ const Network = {
     return neurons;
   },
 
-  createNeuron: function( from, to ) {
+  createNeuron: function( from, to, weight = false ) {
     var neuronID = from.nodeID + "_" + to.nodeID;
     var neuron = null;
 
-    if( this.neuronHistory[neuronID] ) {
-      neuron = this.neuronHistory[neuronID].clone();
-      neuron.weight = 1;
-    }else{
-      neuron = this.neuronHistory[neuronID] = new Neuron(from, to, 1, neuronID);
-    }
+    if( weight === false ) weight = Utils.random(-1);
+
+    neuron = new Neuron(from, to, weight, neuronID);
 
     return neuron;
+  },
+
+  createRandomNeuron: function() {
+
+  },
+
+  splitNeuron: function(neuron, brain) {
+    var from   = neuron.from;
+    var to     = neuron.to;
+    var weight = neuron.weight;
+    var id     = neuron.neuronID;
+
+    // Nouveau layer nécessaire?
+      if( to.layer - from.layer == 1 ) {
+        brain.nodes.map( n => {
+          if( n.layer > from.layer ) n.layer++;
+        });
+        brain.nbLayers++;
+      }
+
+    // Créé une nouvelle node
+      var node = new Node(brain.lastNodeID, from.layer + 1);
+      brain.lastNodeID++;
+      brain.nodes.push(node);
+
+    // Faire les deux nouveaux neurones
+      brain.neurons.push(this.createNeuron(from, node, neuron.weight));
+      brain.neurons.push(this.createNeuron(node, to, 1));
+
+    // Finalement on détruit le neuron original
+      brain.neurons = brain.neurons.filter( n => n.neuronID != id );
   }
 };
 
